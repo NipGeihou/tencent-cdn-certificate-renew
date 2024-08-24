@@ -124,6 +124,12 @@ func obtainCertificate(domain string, providerName string, config *viper.Viper) 
 		dns01.AddRecursiveNameservers(dns01.ParseNameservers(recursiveNameservers)),
 		dns01.CondOption(config.GetBool("disable-cp"), dns01.DisableCompletePropagationRequirement()),
 		dns01.AddDNSTimeout(time.Duration(dnsTimeout)*time.Second),
+		dns01.WrapPreCheck(func(domain, fqdn, value string, check dns01.PreCheckFunc) (bool, error) {
+			validSleepTime := config.GetInt64("valid-sleep-time")
+			log.Printf("Sleep %d seconds to wait for DNS record to take effect", validSleepTime)
+			time.Sleep(time.Duration(validSleepTime) * time.Second)
+			return check(fqdn, value)
+		}),
 	)
 	if err != nil {
 		log.Fatal(err)
