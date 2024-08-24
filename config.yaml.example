@@ -3,7 +3,7 @@ email: my@example.com
 recursive-nameservers:
   - 119.29.29.29:53
 # 禁用本地校验，如果能确认dns生效的，而因为某些原因本地校验不通过，可以禁用本地校验
-disable-cp: true
+disable-cp: false
 # 本地校验dns服务器超时时间/秒
 dns-timeout: 120
 
