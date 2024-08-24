@@ -12,10 +12,10 @@ RUN go mod download
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/reference/dockerfile/#copy
 COPY *.go ./
-COPY config.yaml.example ./config.yaml
+COPY config.yaml.example /config.yaml
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /app
+RUN CGO_ENABLED=0 GOOS=linux go build -o /myapp
 
 # Run
-CMD ["/app"]
+CMD ["/myapp"]
