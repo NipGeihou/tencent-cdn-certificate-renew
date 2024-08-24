@@ -6,7 +6,6 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"fmt"
-	"github.com/go-acme/lego/v4/certcrypto"
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/challenge/dns01"
@@ -93,9 +92,11 @@ func obtainCertificate(domain string, providerName string, config *viper.Viper) 
 	legoConfig := lego.NewConfig(&user)
 
 	// 设置 ca服务器地址
-	legoConfig.CADirURL = lego.LEDirectoryProduction
-	// legoConfig.CADirURL = lego.LEDirectoryStaging
-	legoConfig.Certificate.KeyType = certcrypto.RSA2048
+	if config.GetBool("debug") {
+		legoConfig.CADirURL = lego.LEDirectoryStaging
+	} else {
+		legoConfig.CADirURL = lego.LEDirectoryProduction
+	}
 
 	// 初始化
 	client, err := lego.NewClient(legoConfig)
