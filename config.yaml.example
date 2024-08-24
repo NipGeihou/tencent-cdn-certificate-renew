@@ -1,3 +1,6 @@
+# 定时cron表达式;每天凌晨2点执行
+cron: "0 2 * * *"
+# acme注册邮箱
 email: my@example.com
 # 本地校验dns服务器（默认的Google dns可能会出现校验失败问题）
 recursive-nameservers:

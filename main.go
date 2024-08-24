@@ -14,6 +14,7 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns/cloudflare"
 	"github.com/go-acme/lego/v4/providers/dns/tencentcloud"
 	"github.com/go-acme/lego/v4/registration"
+	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	cdn "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cdn/v20180606"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
@@ -136,7 +137,7 @@ func obtainCertificate(domain string, providerName string, config *viper.Viper) 
 	return certificates
 }
 
-func main() {
+func job() {
 	config := getConfig()
 	renewDays := config.GetInt("renew-days")
 
@@ -223,4 +224,28 @@ func main() {
 		}
 	}
 
+}
+
+func main() {
+	// 创建一个新的Cron实例
+	c := cron.New()
+
+	// 首次执行一次
+	job()
+
+	// 定时执行
+	config := getConfig()
+	_, err := c.AddFunc(config.GetString("cron"), job)
+
+	// 检查是否有错误
+	if err != nil {
+		fmt.Println("Error scheduling job:", err)
+		return
+	}
+
+	// 启动定时任务
+	c.Start()
+
+	// 主程序进入无限循环，这样定时任务就可以持续运行
+	select {}
 }
